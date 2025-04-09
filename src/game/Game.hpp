@@ -2,7 +2,10 @@
 #define GAME_HPP
 
 #include <unordered_map>
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include "../core/Board.hpp"
 #include "Menu.hpp"
 #include "GameState.hpp"
@@ -28,6 +31,8 @@ private:
     sf::Texture boardTexture;
     std::unique_ptr<sf::Sprite> boardSprite;
     std::optional<int> selectedSquare;
+    sf::SoundBuffer moveSelfSoundBuffer;
+    std::unique_ptr<sf::Sound> moveSelfSound;
 
     std::unordered_map<Board::Piece, sf::Texture> pieceTextures;
     std::unordered_map<Board::Piece, sf::Sprite> pieceSprites;

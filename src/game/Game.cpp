@@ -1,5 +1,6 @@
 #include <optional>
 #include <iostream>
+
 #include "Game.hpp"
 #include "GameState.hpp"
 #include "Menu.hpp"
@@ -43,11 +44,24 @@ void Game::run()
 
 void Game::loadAssets()
 {
+
     if (!boardTexture.loadFromFile("assets/textures/boards/ChessBoard_brown.png"))
     {
         std::cerr << "Failed to load board texture" << std::endl;
         return;
     }
+    boardTexture.setSmooth(true); // Enable smooth scaling for better quality
+    if (!moveSelfSoundBuffer.loadFromFile("assets/audio/move-self.mp3"))
+    {
+        std::cerr << "Failed to load move sound" << std::endl;
+        return;
+    }
+    else
+    {
+        moveSelfSound = std::make_unique<sf::Sound>(moveSelfSoundBuffer);
+        moveSelfSound->setVolume(50.f);
+    }
+
     boardSprite = std::make_unique<sf::Sprite>(boardTexture);
     boardSprite->setScale(sf::Vector2f(
         static_cast<float>(chessBoard_size) / boardTexture.getSize().x,
@@ -116,6 +130,9 @@ void Game::processEvents(const sf::Event &event)
                 board.setPieceAt(clickedSquare, movingPiece);
                 board.setPieceAt(selectedSquare.value(), Board::Piece::EMPTY);
                 selectedSquare.reset();
+                // Play the sound when a piece is moved
+                if (moveSelfSound)
+                    moveSelfSound->play();
             }
         }
     }
